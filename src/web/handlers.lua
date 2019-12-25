@@ -3,25 +3,25 @@ local json = require("json")
 
 
 local function invalid_body_resp(req, msg)
-    local resp = req:render({json = {request = req:method()..' '..req:path(),error = "Invalid body: "..msg}})
+    local resp = req:render({json = {error = "Invalid body: "..msg}})
     resp.status = 400
     return resp
 end
 
 local function invalid_data_resp(req, msg)
-    local resp = req:render({json = { request = req:method()..' '..req:path(), error = "Invalid data: "..msg }})
+    local resp = req:render({json = {error = "Invalid data: "..msg }})
     resp.status = 400
     return resp
 end
 
 local function duplicate_key_resp(req, msg)
-    local resp = req:render({json = { request = req:method()..' '..req:path(), error = "key '"..msg.."' already exists" }})
+    local resp = req:render({json = {error = "key '"..msg.."' already exists" }})
     resp.status = 409
     return resp
 end
 
 local function key_not_found(req, key)
-    local resp = req:render({json = {request = req:method()..' '..req:path(),error = "key '"..key.."' not found"}})
+    local resp = req:render({json = {error = "key '"..key.."' not found"}})
     resp.status = 404
     return resp
 end
