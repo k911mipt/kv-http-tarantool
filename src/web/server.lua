@@ -18,7 +18,7 @@ local httpd = {
             :route({method = "GET", path = "/kv/:id"}, handlers:get())
             :route({method = "DELETE", path = "/kv/:id"}, handlers:delete())
 
-        self.server = http_server.new(nil, 8080)
+        self.server = http_server.new("0.0.0.0", 8080)
         self.router = router
         self.server:set_router(router)
     end,
