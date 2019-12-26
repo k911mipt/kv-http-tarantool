@@ -26,7 +26,6 @@ local kv = {
                         parts = {"key"}
                     }
                 )
-                box.schema.user.grant("guest", "read,write,execute", "universe")
             end
         )
         self.space = box.space[space_name]
