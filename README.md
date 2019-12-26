@@ -25,7 +25,9 @@
   * 200 : success
   * 404 : key not found
 
-If requests number per second exceeds specified limit, an error `429` is returned
+If requests number per second exceeds specified limit, an error `429` is returned.
+> Note: limiter is quite simple so it's actually possible to exceed limit as twice as set limit.
+
 
 Every operation is logged via default tarantool logger
 
