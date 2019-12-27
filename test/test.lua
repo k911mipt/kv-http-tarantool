@@ -3,11 +3,14 @@ local clock = require("clock")
 local fiber = require("fiber")
 local tap = require("tap")
 local http_client = require("http.client")
-local HOST = "http://localhost:8080/"
-local URI = HOST.."kv/"
-
 local taptest = tap.test("test-name")
 
+local HOST = os.getenv('SERVER_HOST')
+if HOST == nil then 
+    HOST = "http://localhost:8080/"
+end
+local URI = HOST.."kv/"
+-- return
 taptest:diag("Started testing kv store via http requests")
 
 local function new_test_func(metadata)

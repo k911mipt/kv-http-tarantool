@@ -4,12 +4,9 @@ local web_server = require("web.server")
 local web_limiter = require("web.limiter")
 
 box.cfg {
-    -- log = './log.log',
-
-    -- listen = 3301,
+    log = './log.log',
+    pid_file = '1.pid'
     -- background = true,
-    -- log = '1.log',
-    -- pid_file = '1.pid'
 }
 
 --starting database
