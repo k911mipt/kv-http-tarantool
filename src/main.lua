@@ -17,6 +17,6 @@ kv_store:start()
 --initializing web server with database
 web_server:init(kv_store)
 --setting a new requests-per-second limiter 
-web_server:set_limiter(web_limiter.new(1))
+web_server:set_limiter(60, web_limiter)
 --starting a web server
 web_server:start()

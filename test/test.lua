@@ -1,8 +1,10 @@
 local json = require("json")
+local clock = require("clock")
 local fiber = require("fiber")
 local tap = require("tap")
 local http_client = require("http.client")
-local URI = "http://localhost:8080/kv/"
+local HOST = "http://localhost:8080/"
+local URI = HOST.."kv/"
 
 local taptest = tap.test("test-name")
 
@@ -23,6 +25,51 @@ local function new_test_func(metadata)
         taptest:is(resp.status, metadata.expected_status)
         taptest:is(resp.body, metadata.expected_body)
     end
+end
+
+local function request_limiter_test(taptest)
+    taptest:diag("Request limiter test")
+    -- taptest:plan(4)
+
+    local resp = http_client.get(HOST)
+    local is_parsed, obj = pcall(function() return json.decode(resp.body) end)
+    taptest:is(is_parsed, true, "has got host/ reponse")
+    if not is_parsed then
+        return
+    end
+
+    local capacity = obj.capacity
+    taptest:isnt(capacity, nil, "has limiter set")
+    if capacity == nil then
+        return
+    end
+
+    taptest:diag("Exceed frequency")
+
+    fiber.sleep(1)
+    local time_start = clock.monotonic64()
+    -- there is a primitive requests rate limiter, which only guarantees not exceeding x2 capacity,
+    -- so checking x2 + 1 requests
+    for i = 1, capacity * 2 + 1 do
+        resp = http_client.get(HOST)
+    end
+    local time_end = clock.monotonic64()
+
+    if time_end - time_start < 1000000000 then -- succeeded to perform all requests in less than a second
+        taptest:is(resp.body, json.encode({error = "Too many requests. Try again later"}, "has rejected too frequent requests"))
+    else
+        taptest:diag("Cannot perform required requests amount in a second to ensure that superior number would be rejected")
+    end
+    taptest:diag("Deceed frequency")
+    fiber.sleep(1)
+    time_start = clock.monotonic64()
+    -- there is a primitive requests rate limiter, which only guarantees not exceeding x2 capacity,
+    -- so checking x2 + 1 requests
+    for i = 1, capacity do
+        resp = http_client.get(HOST)
+    end
+    time_end = clock.monotonic64()
+    taptest:isnt(resp.error, json.encode({error = "Too many requests. Try again later"}, "has passed suitable requests frequency"))
 end
 
 local test_id = "__test_id1"
@@ -145,12 +192,15 @@ local tests = {
             expected_status = 400,
             expected_body = json.encode({error = "Invalid data: missing 'key' or 'value'"})
         }
-    },
+    }
 }
 
 local num_tests = table.getn(tests)
-taptest:plan(num_tests)
+taptest:plan(num_tests + 4) -- 4 request rate limiting tests
 for i = 1, num_tests do
     taptest:test(tests[i].name, new_test_func(tests[i].metadata))
 end
+
+request_limiter_test(taptest)
+
 taptest:check()
