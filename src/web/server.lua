@@ -18,8 +18,8 @@ local httpd = {
             :route({method = "PUT", path = "/kv/:id"}, handlers:change())
             :route({method = "GET", path = "/kv/:id"}, handlers:get())
             :route({method = "DELETE", path = "/kv/:id"}, handlers:delete())
-
-        self.server = http_server.new("0.0.0.0", 8080)
+        local PORT = os.getenv('PORT')
+        self.server = http_server.new("0.0.0.0", PORT)
         self.router = router
         self.server:set_router(router)
         self.capacity = 0
