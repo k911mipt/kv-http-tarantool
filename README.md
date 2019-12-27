@@ -43,7 +43,14 @@ docker-compose up # <- this will also run tests
 
 Application deployed on http://gentle-springs-29037.herokuapp.com/
 
-You can test storage with following curl commands
+To test application clone repo and run
+
+```bash
+HOST=http://gentle-springs-29037.herokuapp.com/ tarantool test/test.lua
+```
+
+Or you can test storage with following curl commands
+
 ```bash
 
 # Create pair `mykey` - `{"myvalue": "a"}`
