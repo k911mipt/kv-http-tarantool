@@ -39,3 +39,39 @@ docker-compose build
 docker-compose up # <- this will also run tests
 ```
 
+## Demonstration
+
+Application deployed on http://gentle-springs-29037.herokuapp.com/
+
+You can test storage with following curl commands
+```bash
+
+# Create pair `mykey` - `{"myvalue": "a"}`
+curl --location --request POST 'http://gentle-springs-29037.herokuapp.com/kv/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "key": "mykey",
+    "value": {
+        "myvalue": "a"
+    }
+}'
+
+# Get pair by id `mykey`
+curl --location --request GET 'https://gentle-springs-29037.herokuapp.com/kv/mykey/' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+
+# Update pair `mykey` with `"my_new_value": {"a": "b"}`
+curl --location --request PUT 'https://gentle-springs-29037.herokuapp.com/kv/mykey/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "my_new_value": {
+        "a": "b"
+    }
+}'
+
+# Drop pair by id `mykey`
+curl --location --request DELETE 'https://gentle-springs-29037.herokuapp.com/kv/mykey/' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+```
