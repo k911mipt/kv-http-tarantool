@@ -32,9 +32,10 @@ If requests number per second exceeds specified limit, an error `429` is returne
 Every operation is logged via default tarantool logger
 
 
-## Docker build && run
-```cmd
+## Docker build && test && run
+
+```docker
 docker-compose build
-docker run -p 8080:8080 kv-http-tarantool_kv_store
+docker-compose up # <- this will also run tests
 ```
 
