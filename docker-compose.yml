@@ -1,0 +1,18 @@
+version: '2'
+services:
+  kv_store:
+    build: src
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+  kv_tests:
+    depends_on:
+      - kv_store
+    build: test
+    networks:
+      - backend
+    environment:
+      - SERVER_HOST=http://kv_store:8080/
+networks:
+  backend:
